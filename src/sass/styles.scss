@@ -55,7 +55,13 @@ p {
 	margin: 10% 0 0 10%;
 	border-radius: 100%;
 	background: red;
+
+	&.dark {
+		background: red;
+	}
+
+	&.light {
+		background: yellow;
+	}
 }
-
-
 
