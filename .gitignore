@@ -3,6 +3,7 @@
 *.sublime-workspace
 
 node_modules
+_test
 
 .DS_Store
 Thumbs.db
