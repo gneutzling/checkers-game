@@ -70,9 +70,6 @@ p {
 .board__square.dark {
   background: #606062;
 }
-.board__square.selected {
-  background: pink;
-}
 
 .board__piece {
   display: block;
@@ -80,11 +77,14 @@ p {
   height: 80%;
   margin: 10% 0 0 10%;
   border-radius: 100%;
-  background: red;
+  box-sizing: border-box;
 }
 .board__piece.player-one {
   background: #eeeedd;
 }
 .board__piece.player-two {
   background: #cc8833;
+}
+.board__piece.selected {
+  border: 1px solid red;
 }

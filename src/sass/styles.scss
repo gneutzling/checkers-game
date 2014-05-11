@@ -25,7 +25,6 @@ p { font-size: 1.4em; }
 
 	&.light { background: $light; }
 	&.dark { background: $dark; }
-	&.selected { background: pink; }
 }
 
 .board__piece {
@@ -34,9 +33,13 @@ p { font-size: 1.4em; }
 	height: 80%;
 	margin: 10% 0 0 10%;
 	border-radius: 100%;
-	background: red;
+	box-sizing: border-box;
 
 	&.player-one { background: $playerOne; }
 	&.player-two { background: $playerTwo; }
+
+	&.selected {
+		border: 1px solid red;
+	}
 }
 
