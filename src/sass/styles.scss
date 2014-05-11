@@ -38,6 +38,10 @@ p { font-size: 1.4em; }
 	&.player-one { background: $playerOne; }
 	&.player-two { background: $playerTwo; }
 
+	&.king {
+		box-shadow: inset 0 0 40px red;
+	}
+
 	&.selected {
 		border: 1px solid red;
 	}

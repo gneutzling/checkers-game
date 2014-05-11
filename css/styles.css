@@ -85,6 +85,9 @@ p {
 .board__piece.player-two {
   background: #cc8833;
 }
+.board__piece.king {
+  box-shadow: inset 0 0 40px red;
+}
 .board__piece.selected {
   border: 1px solid red;
 }

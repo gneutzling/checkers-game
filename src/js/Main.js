@@ -210,7 +210,9 @@
 	 * 2 x 2 = a movement with capture.
 	 */
 	app.checkMove = function () {
-		if (app.validateMove()) {
+		var isSimpleMovement = ((app.isPlayerOne && app.position.destiny.y < app.position.piece.y) || (!app.isPlayerOne && app.position.destiny.y > app.position.piece.y)) ? true : false;
+
+		if (app.isKing(app.selectedPiece) || isSimpleMovement) {
 			if (app.position.diff.x === 1 && app.position.diff.y === 1) {
 				app.movePiece();
 				app.changePlayer();
@@ -238,17 +240,7 @@
 		}
 		else {
 			app.showMessage('Você deve movimentar a peça para frente.');
-
 		}
-	};
-
-
-	/**
-	 * Check if is a valid movement.
-	 * @return {boolean} True for valid movement or false for not.
-	 */
-	app.validateMove = function () {
-		return ((app.isPlayerOne && app.position.destiny.y < app.position.piece.y) || (!app.isPlayerOne && app.position.destiny.y > app.position.piece.y)) ? true : false;
 	};
 
 
@@ -262,6 +254,10 @@
 		if (captured) {
 			captured.remove();
 		}
+
+		if (!app.isKing(app.selectedPiece) && app.position.destiny.y === 0 || app.position.destiny.y === 7) {
+			app.setKing(app.selectedPiece);
+		}
 	};
 
 
@@ -273,7 +269,7 @@
 		var dataValue = null,
 			captured = null;
 
-		if (app.isPlayerOne) {
+		if (app.isPlayerOne && !app.isKing(app.selectedPiece)) {
 			if (app.position.piece.x > app.position.destiny.x) {
 				dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x + 1);
 			}
@@ -282,16 +278,25 @@
 			}
 		}
 		else {
-			if (app.position.piece.x > app.position.destiny.x) {
-				dataValue = (app.position.destiny.y - 1) + '-' + (app.position.destiny.x + 1);
+			if (!app.isPlayerOne && app.isKing(app.selectedPiece)) {
+				if (app.position.piece.x > app.position.destiny.x) {
+					dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x + 1);
+				}
+				else {
+					dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x - 1);
+				}		
 			}
 			else {
-				dataValue = (app.position.destiny.y - 1) + '-' + (app.position.destiny.x - 1);
+				if (app.position.piece.x > app.position.destiny.x) {
+					dataValue = (app.position.destiny.y - 1) + '-' + (app.position.destiny.x + 1);
+				}
+				else {
+					dataValue = (app.position.destiny.y - 1) + '-' + (app.position.destiny.x - 1);
+				}
 			}
 		}
 
 		captured = app.board.querySelectorAll('[data-position="' + dataValue + '"]')[0];
-
 		return captured.getElementsByClassName('board__piece')[0] || false;
 	};
 
@@ -308,6 +313,25 @@
 
 		app.position.diff.y = (app.position.piece.y - app.position.destiny.y) < 0 ? (app.position.piece.y - app.position.destiny.y) * -1 : app.position.piece.y - app.position.destiny.y;
 		app.position.diff.x = (app.position.piece.x - app.position.destiny.x) < 0 ? (app.position.piece.x - app.position.destiny.x) * -1 : app.position.piece.x - app.position.destiny.x;
+	};
+
+
+	/**
+	 * Set piece like king.
+	 * @param {object} piece DOM element.
+	 */
+	app.setKing = function (piece) {
+		piece.classList.add('king');
+	};
+
+
+	/**
+	 * Check if selected piece is king.
+	 * @param  {object}  piece DOM element.
+	 * @return {Boolean}       True if is king or false if not.
+	 */
+	app.isKing = function (piece) {
+		return piece.classList.contains('king');
 	};
 
 
