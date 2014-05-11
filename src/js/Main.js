@@ -147,53 +147,25 @@
 
 
 	/**
-	 * Get the square's position in the board.
-	 * @param  {object} element A DOM element.
-	 * @return {object}         Position x and y of the element.
+	 * Setup the process of current match.
+	 * @param  {object} target DOM element clicked.
 	 */
-	app.getPosition = function (element) {
-		var dataPos = element.getAttribute('data-position').split('-');
-
-		return {
-			y: parseInt(dataPos[0]),
-			x: parseInt(dataPos[1])
-		};
-	};
-
-
-	/**
-	 * Get the piece's type.
-	 * @param  {object} element A DOM element.
-	 * @return {String}         Type of the piece.
-	 */
-	app.getPieceType = function (element) {
-		return element.getAttribute('data-piece-type');
-	};
-
-
-	/**
-	 * @todo: Exibir um feedback para o usuário.
-	 */
-	app.showMessage = function (message) {
-		console.log('### ', message);
-	};
-
-
-	/**
-	 * Update the visual score.
-	 */
-	app.updateScore = function () {
-		app.player.one.dom.score.innerHTML = app.player.one.score;
-		app.player.two.dom.score.innerHTML = app.player.two.score;
-	};
-
-
-	/**
-	 * Update player's name.
-	 */
-	app.updatePlayer = function () {
-		app.player.one.dom.name.innerHTML = app.player.one.name + ': ';
-		app.player.two.dom.name.innerHTML = app.player.two.name + ': ';
+	app.move = function (target) {
+		if (app.selectedPiece == null) {
+			app.choosePiece(target);
+		}
+		else {
+			if (!app.hasPiece(target)) {
+				app.chooseDestiny(target);
+				app.setMatchPosition();
+				app.checkMove();
+				app.resetVars();
+			}
+			else {
+				app.showMessage('Você deve escolher um destino válido.');
+				app.resetVars();
+			}
+		}
 	};
 
 
@@ -233,49 +205,6 @@
 
 
 	/**
-	 * Change the player's turn.
-	 */
-	app.changePlayer = function () {
-		app.isPlayerOne = !app.isPlayerOne;
-	};
-
-
-	/**
-	 * Configure the coordinates.
-	 */
-	app.setMatchPosition = function () {
-		app.position.piece.y = app.getPosition(app.selectedSquare).y;
-		app.position.piece.x = app.getPosition(app.selectedSquare).x;
-
-		app.position.destiny.y = app.getPosition(app.selectedDestiny).y;
-		app.position.destiny.x = app.getPosition(app.selectedDestiny).x;
-
-		app.position.diff.y = (app.position.piece.y - app.position.destiny.y) < 0 ? (app.position.piece.y - app.position.destiny.y) * -1 : app.position.piece.y - app.position.destiny.y;
-		app.position.diff.x = (app.position.piece.x - app.position.destiny.x) < 0 ? (app.position.piece.x - app.position.destiny.x) * -1 : app.position.piece.x - app.position.destiny.x;
-	};
-
-
-	/**
-	 * Check if there is piece in the square.
-	 * @param  {object}  square DOM element
-	 * @return {Boolean}        true if there is piece or false if not.
-	 */
-	app.hasPiece = function (square) {
-		var piece = square.getElementsByClassName('board__piece')[0];
-		return (piece) ? true : false;
-	};
-
-
-	/**
-	 * Check if is a valid movement.
-	 * @return {boolean} True for valid movement or false for not.
-	 */
-	app.validateMove = function () {
-		return ((app.isPlayerOne && app.position.destiny.y < app.position.piece.y) || (!app.isPlayerOne && app.position.destiny.y > app.position.piece.y)) ? true : false;
-	};
-
-
-	/**
 	 * The main rules of the game
 	 * 1 x 1 = a simple movement.
 	 * 2 x 2 = a movement with capture.
@@ -311,6 +240,15 @@
 			app.showMessage('Você deve movimentar a peça para frente.');
 
 		}
+	};
+
+
+	/**
+	 * Check if is a valid movement.
+	 * @return {boolean} True for valid movement or false for not.
+	 */
+	app.validateMove = function () {
+		return ((app.isPlayerOne && app.position.destiny.y < app.position.piece.y) || (!app.isPlayerOne && app.position.destiny.y > app.position.piece.y)) ? true : false;
 	};
 
 
@@ -359,25 +297,87 @@
 
 
 	/**
-	 * Setup the process of current match.
-	 * @param  {object} target DOM element clicked.
+	 * Configure the coordinates.
 	 */
-	app.move = function (target) {
-		if (app.selectedPiece == null) {
-			app.choosePiece(target);
-		}
-		else {
-			if (!app.hasPiece(target)) {
-				app.chooseDestiny(target);
-				app.setMatchPosition();
-				app.checkMove();
-				app.resetVars();
-			}
-			else {
-				app.showMessage('Você deve escolher um destino válido.');
-				app.resetVars();
-			}
-		}
+	app.setMatchPosition = function () {
+		app.position.piece.y = app.getPosition(app.selectedSquare).y;
+		app.position.piece.x = app.getPosition(app.selectedSquare).x;
+
+		app.position.destiny.y = app.getPosition(app.selectedDestiny).y;
+		app.position.destiny.x = app.getPosition(app.selectedDestiny).x;
+
+		app.position.diff.y = (app.position.piece.y - app.position.destiny.y) < 0 ? (app.position.piece.y - app.position.destiny.y) * -1 : app.position.piece.y - app.position.destiny.y;
+		app.position.diff.x = (app.position.piece.x - app.position.destiny.x) < 0 ? (app.position.piece.x - app.position.destiny.x) * -1 : app.position.piece.x - app.position.destiny.x;
+	};
+
+
+	/**
+	 * Change the player's turn.
+	 */
+	app.changePlayer = function () {
+		app.isPlayerOne = !app.isPlayerOne;
+	};
+
+
+	/**
+	 * Check if there is piece in the square.
+	 * @param  {object}  square DOM element
+	 * @return {Boolean}        true if there is piece or false if not.
+	 */
+	app.hasPiece = function (square) {
+		var piece = square.getElementsByClassName('board__piece')[0];
+		return (piece) ? true : false;
+	};
+
+
+	/**
+	 * Get the square's position in the board.
+	 * @param  {object} element A DOM element.
+	 * @return {object}         Position x and y of the element.
+	 */
+	app.getPosition = function (element) {
+		var dataPos = element.getAttribute('data-position').split('-');
+
+		return {
+			y: parseInt(dataPos[0]),
+			x: parseInt(dataPos[1])
+		};
+	};
+
+
+	/**
+	 * Get the piece's type.
+	 * @param  {object} element A DOM element.
+	 * @return {String}         Type of the piece.
+	 */
+	app.getPieceType = function (element) {
+		return element.getAttribute('data-piece-type');
+	};
+
+
+	/**
+	 * Update the visual score.
+	 */
+	app.updateScore = function () {
+		app.player.one.dom.score.innerHTML = app.player.one.score;
+		app.player.two.dom.score.innerHTML = app.player.two.score;
+	};
+
+
+	/**
+	 * Update player's name.
+	 */
+	app.updatePlayer = function () {
+		app.player.one.dom.name.innerHTML = app.player.one.name + ': ';
+		app.player.two.dom.name.innerHTML = app.player.two.name + ': ';
+	};
+
+
+	/**
+	 * @todo: Exibir um feedback para o usuário.
+	 */
+	app.showMessage = function (message) {
+		console.log('### ', message);
 	};
 
 
