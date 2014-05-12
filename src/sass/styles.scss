@@ -35,15 +35,16 @@ p { font-size: 1.4em; }
 	border-radius: 100%;
 	box-sizing: border-box;
 
-	&.player-one { background: $playerOne; }
-	&.player-two { background: $playerTwo; }
-
 	&.king {
-		box-shadow: inset 0 0 40px red;
+		background: url(../img/icon-crown.png) center no-repeat;
 	}
 
+	&.player-one { background-color: $playerOne; }
+	&.player-two { background-color: $playerTwo; }
+
 	&.selected {
-		border: 1px solid red;
+		border: 1px solid #000;
+		box-shadow: 0 0 15px 5px #000;
 	}
 }
 

@@ -226,6 +226,7 @@
 							app.movePiece(capturedPiece);
 							app.player.one.score++;
 							app.updateScore();
+							app.verifyNewCapture();
 						}
 					}
 					else {
@@ -233,6 +234,7 @@
 							app.movePiece(capturedPiece);
 							app.player.two.score++;
 							app.updateScore();
+							app.verifyNewCapture();
 						}
 					}
 				}
@@ -240,6 +242,89 @@
 		}
 		else {
 			app.showMessage('Você deve movimentar a peça para frente.');
+		}
+	};
+
+
+	/**
+	 * Check if there is piece to be captured.
+	 * @todo: refactoring is needed.
+	 */
+	app.verifyNewCapture = function () {
+		var domNextPiece = null,
+			domNextSquare = null,
+			domFuturePiece = null,
+			domFutureSquare = null,
+			dataValue = null;
+			nextSquare = [],
+			futureSquare = [];
+
+		if (app.isKing(app.selectedPiece)) {
+			nextSquare = [
+				{ y: (app.position.destiny.y - 1), x: (app.position.destiny.x + 1) },
+				{ y: (app.position.destiny.y - 1), x: (app.position.destiny.x - 1) },
+				{ y: (app.position.destiny.y + 1), x: (app.position.destiny.x + 1) },
+				{ y: (app.position.destiny.y + 1), x: (app.position.destiny.x - 1) }
+			];
+
+			futureSquare = [
+				{ y: (app.position.destiny.y - 2), x: (app.position.destiny.x + 2) },
+				{ y: (app.position.destiny.y - 2), x: (app.position.destiny.x - 2) },
+				{ y: (app.position.destiny.y + 2), x: (app.position.destiny.x + 2) },
+				{ y: (app.position.destiny.y + 2), x: (app.position.destiny.x - 2) }
+			];
+		}
+		else {
+			if (app.isPlayerOne) {
+				nextSquare = [
+					{ y: (app.position.destiny.y - 1), x: (app.position.destiny.x + 1) },
+					{ y: (app.position.destiny.y - 1), x: (app.position.destiny.x - 1) }
+				];
+
+				futureSquare = [
+					{ y: (app.position.destiny.y - 2), x: (app.position.destiny.x + 2) },
+					{ y: (app.position.destiny.y - 2), x: (app.position.destiny.x - 2) }
+				];
+			}
+			else {
+				nextSquare = [
+					{ y: (app.position.destiny.y + 1), x: (app.position.destiny.x + 1) },
+					{ y: (app.position.destiny.y + 1), x: (app.position.destiny.x - 1) }
+				];
+
+				futureSquare = [
+					{ y: (app.position.destiny.y + 2), x: (app.position.destiny.x + 2) },
+					{ y: (app.position.destiny.y + 2), x: (app.position.destiny.x - 2) }
+				];
+			}
+		}
+
+		for (var i = 0, len = nextSquare.length; i < len; i++) {
+			dataValue = (nextSquare[i].y + '-' + nextSquare[i].x);
+			domNextSquare = app.board.querySelectorAll('[data-position="' + dataValue + '"]')[0] || false;
+
+			if (domNextSquare) {
+				domNextPiece = domNextSquare.getElementsByClassName('board__piece')[0] || false;
+			}
+
+			dataValue = (futureSquare[i].y + '-' + futureSquare[i].x);
+			domFutureSquare = app.board.querySelectorAll('[data-position="' + dataValue + '"]')[0] || false;
+
+			if (domFutureSquare) {
+				domFuturePiece = domFutureSquare.getElementsByClassName('board__piece')[0] || false;
+			}
+
+
+			if (domNextPiece && !domFuturePiece && domFutureSquare) {
+				console.log('há uma peça para capturar.');
+				break;
+			}
+			else {
+				if (i === len - 1) {
+					console.log('não há possibilidade de captura.');
+					app.changePlayer();
+				}
+			}
 		}
 	};
 
@@ -263,38 +348,86 @@
 
 	/**
 	 * Get the captured piece.
+	 * @todo: refactoring is needed.
 	 * @return {object} DOM element or false.
 	 */
 	app.getCaptured = function () {
 		var dataValue = null,
-			captured = null;
+			captured = null,
+			coordinates = { x: null, y: null };
 
-		if (app.isPlayerOne && !app.isKing(app.selectedPiece)) {
+		if (app.isKing(app.selectedPiece)) {
 			if (app.position.piece.x > app.position.destiny.x) {
-				dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x + 1);
+				console.log('KING foi pra esquerda');
+				coordinates.x = (app.position.destiny.x + 1);
 			}
 			else {
-				dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x - 1);
+				console.log('KING foi pra direita');
+				coordinates.x = (app.position.destiny.x - 1);
 			}
+
+			if (app.position.piece.y > app.position.destiny.y) {
+				console.log('KING foi pra cima');
+				coordinates.y = (app.position.destiny.y + 1);
+			}
+			else {
+				console.log('KING foi pra baixo');
+				coordinates.y = (app.position.destiny.y - 1);	
+			}
+
+			dataValue = coordinates.y  + '-' + coordinates.x;
 		}
 		else {
-			if (!app.isPlayerOne && app.isKing(app.selectedPiece)) {
+			if (app.isPlayerOne) {
 				if (app.position.piece.x > app.position.destiny.x) {
+					console.log('playerOne foi pra esquerda');
 					dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x + 1);
 				}
 				else {
-					dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x - 1);
-				}		
+					console.log('playerOne foi pra direita');
+					dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x - 1);	
+				}
 			}
 			else {
 				if (app.position.piece.x > app.position.destiny.x) {
+					console.log('playerTwo foi pra esquerda');
 					dataValue = (app.position.destiny.y - 1) + '-' + (app.position.destiny.x + 1);
 				}
 				else {
-					dataValue = (app.position.destiny.y - 1) + '-' + (app.position.destiny.x - 1);
+					console.log('playerTwo foi pra direita');
+					dataValue = (app.position.destiny.y - 1) + '-' + (app.position.destiny.x - 1);	
 				}
 			}
 		}
+
+
+
+		// if (app.isPlayerOne && !app.isKing(app.selectedPiece)) {
+		// 	if (app.position.piece.x > app.position.destiny.x) {
+		// 		dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x + 1);
+		// 	}
+		// 	else {
+		// 		dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x - 1);
+		// 	}
+		// }
+		// else {
+		// 	if (!app.isPlayerOne && app.isKing(app.selectedPiece)) {
+		// 		if (app.position.piece.x > app.position.destiny.x) {
+		// 			dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x + 1);
+		// 		}
+		// 		else {
+		// 			dataValue = (app.position.destiny.y + 1) + '-' + (app.position.destiny.x - 1);
+		// 		}		
+		// 	}
+		// 	else {
+		// 		if (app.position.piece.x > app.position.destiny.x) {
+		// 			dataValue = (app.position.destiny.y - 1) + '-' + (app.position.destiny.x + 1);
+		// 		}
+		// 		else {
+		// 			dataValue = (app.position.destiny.y - 1) + '-' + (app.position.destiny.x - 1);
+		// 		}
+		// 	}
+		// }
 
 		captured = app.board.querySelectorAll('[data-position="' + dataValue + '"]')[0];
 		return captured.getElementsByClassName('board__piece')[0] || false;
