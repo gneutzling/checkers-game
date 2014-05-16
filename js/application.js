@@ -196,6 +196,19 @@
                 y: position.y + 1,
                 x: position.x - 1
             } ];
+            app.destines = [ {
+                y: position.y - 2,
+                x: position.x + 2
+            }, {
+                y: position.y - 2,
+                x: position.x - 2
+            }, {
+                y: position.y + 2,
+                x: position.x + 2
+            }, {
+                y: position.y + 2,
+                x: position.x - 2
+            } ];
         } else {
             if (app.isPlayerOne) {
                 app.possibilities = [ {
@@ -380,20 +393,18 @@
         };
         for (var i = 0, len = app.possibilities.length; i < len; i++) {
             nextElement = app.getElementSquare(app.possibilities[i].y, app.possibilities[i].x);
-            pos.x = i % 2 === 0 ? app.possibilities[i].x + 1 : app.possibilities[i].x - 1;
             if (app.isKing(app.selectedPiece)) {
-                pos.y = i % 2 === 0 ? app.possibilities[i].y + 1 : app.possibilities[i].y - 1;
+                nextDestiny = app.getElementSquare(app.destines[i].y, app.destines[i].x);
             } else {
                 pos.y = app.isPlayerOne ? app.possibilities[i].y - 1 : app.possibilities[i].y + 1;
+                pos.x = i % 2 === 0 ? app.possibilities[i].x + 1 : app.possibilities[i].x - 1;
+                nextDestiny = app.getElementSquare(pos.y, pos.x);
             }
             if (nextElement) {
                 nextPiece = app.getPiece(nextElement);
             }
-            nextDestiny = app.getElementSquare(pos.y, pos.x);
             if (nextPiece && nextDestiny && !app.getPiece(nextDestiny) && app.isValidPiece(app.getPieceType(nextPiece), true)) {
                 console.log("há chance de captura.");
-                console.log("nextElement", nextElement);
-                console.log("nextDestiny", nextDestiny);
                 break;
             } else {
                 if (i === len - 1) {
