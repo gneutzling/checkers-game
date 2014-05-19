@@ -115,7 +115,6 @@
                 app.destinyPosition = app.getPosition(target);
                 app.jump();
                 app.resetVars();
-                return false;
             } else {
                 app.showMessage("Você deve escolher um destino válido.");
                 app.resetVars();
@@ -148,10 +147,6 @@
 	 * @param  {object}  square DOM element
 	 * @return {Boolean}        true if there is piece or false if not.
 	 */
-    app.hasPiece = function(square) {
-        app.getPiece(square);
-    };
-    // pega a peça e retorna a mesma ou false.
     app.getPiece = function(square) {
         return square.getElementsByClassName("board__piece")[0] || false;
     };
@@ -334,58 +329,10 @@
     app.showMessage = function(message) {
         console.log("### ", message);
     };
-    // ================================
-    // ================================
-    // ================================
     /**
-	 * Configure the coordinates.
+	 * Check if there is piece to be captured.
+	 * @todo: refactoring is needed.
 	 */
-    // app.setMatchPosition = function () {
-    // 	app.position.piece.y = app.getPosition(app.selectedSquare).y;
-    // 	app.position.piece.x = app.getPosition(app.selectedSquare).x;
-    // 	app.position.destiny.y = app.getPosition(app.selectedDestiny).y;
-    // 	app.position.destiny.x = app.getPosition(app.selectedDestiny).x;
-    // 	app.position.diff.y = (app.position.piece.y - app.position.destiny.y) < 0 ? (app.position.piece.y - app.position.destiny.y) * -1 : app.position.piece.y - app.position.destiny.y;
-    // 	app.position.diff.x = (app.position.piece.x - app.position.destiny.x) < 0 ? (app.position.piece.x - app.position.destiny.x) * -1 : app.position.piece.x - app.position.destiny.x;
-    // };
-    /**
-	 * The main rules of the game
-	 * 1 x 1 = a simple movement.
-	 * 2 x 2 = a movement with capture.
-	 */
-    // app.checkMove = function () {
-    // 	var isSimpleMovement = ((app.isPlayerOne && app.position.destiny.y < app.position.piece.y) || (!app.isPlayerOne && app.position.destiny.y > app.position.piece.y)) ? true : false;
-    // 	if (app.isKing(app.selectedPiece) || isSimpleMovement) {
-    // 		if (app.position.diff.x === 1 && app.position.diff.y === 1) {
-    // 			app.movePiece();
-    // 			app.changePlayer();
-    // 		}
-    // 		else {
-    // 			if (app.position.diff.x === 2 && app.position.diff.y === 2) {
-    // 				var capturedPiece = app.getCaptured();
-    // 				if (app.isPlayerOne) {
-    // 					if (capturedPiece && app.getPieceType(capturedPiece) === 'player-two') {
-    // 						app.movePiece(capturedPiece);
-    // 						app.player.one.score++;
-    // 						app.updateScore();
-    // 						app.verifyNewCapture();
-    // 					}
-    // 				}
-    // 				else {
-    // 					if (capturedPiece && app.getPieceType(capturedPiece) === 'player-one') {
-    // 						app.movePiece(capturedPiece);
-    // 						app.player.two.score++;
-    // 						app.updateScore();
-    // 						app.verifyNewCapture();
-    // 					}
-    // 				}
-    // 			}
-    // 		}
-    // 	}
-    // 	else {
-    // 		app.showMessage('Você deve movimentar a peça para frente.');
-    // 	}
-    // };
     app.verifyNewCapture = function() {
         var nextElement = null, nextDestiny = null, nextPiece = null, pos = {
             x: null,
@@ -413,79 +360,6 @@
             }
         }
     };
-    /**
-	 * Check if there is piece to be captured.
-	 * @todo: refactoring is needed.
-	 */
-    // app.verifyNewCapture = function () {
-    // 	var domNextPiece = null,
-    // 		domNextSquare = null,
-    // 		domFuturePiece = null,
-    // 		domFutureSquare = null,
-    // 		dataValue = null;
-    // 		isAdversary = null,
-    // 		nextSquare = [],
-    // 		futureSquare = [];
-    // 	if (app.isKing(app.selectedPiece)) {
-    // 		nextSquare = [
-    // 			{ y: (app.position.destiny.y - 1), x: (app.position.destiny.x + 1) },
-    // 			{ y: (app.position.destiny.y - 1), x: (app.position.destiny.x - 1) },
-    // 			{ y: (app.position.destiny.y + 1), x: (app.position.destiny.x + 1) },
-    // 			{ y: (app.position.destiny.y + 1), x: (app.position.destiny.x - 1) }
-    // 		];
-    // 		futureSquare = [
-    // 			{ y: (app.position.destiny.y - 2), x: (app.position.destiny.x + 2) },
-    // 			{ y: (app.position.destiny.y - 2), x: (app.position.destiny.x - 2) },
-    // 			{ y: (app.position.destiny.y + 2), x: (app.position.destiny.x + 2) },
-    // 			{ y: (app.position.destiny.y + 2), x: (app.position.destiny.x - 2) }
-    // 		];
-    // 	}
-    // 	else {
-    // 		if (app.isPlayerOne) {
-    // 			nextSquare = [
-    // 				{ y: (app.position.destiny.y - 1), x: (app.position.destiny.x + 1) },
-    // 				{ y: (app.position.destiny.y - 1), x: (app.position.destiny.x - 1) }
-    // 			];
-    // 			futureSquare = [
-    // 				{ y: (app.position.destiny.y - 2), x: (app.position.destiny.x + 2) },
-    // 				{ y: (app.position.destiny.y - 2), x: (app.position.destiny.x - 2) }
-    // 			];
-    // 		}
-    // 		else {
-    // 			nextSquare = [
-    // 				{ y: (app.position.destiny.y + 1), x: (app.position.destiny.x + 1) },
-    // 				{ y: (app.position.destiny.y + 1), x: (app.position.destiny.x - 1) }
-    // 			];
-    // 			futureSquare = [
-    // 				{ y: (app.position.destiny.y + 2), x: (app.position.destiny.x + 2) },
-    // 				{ y: (app.position.destiny.y + 2), x: (app.position.destiny.x - 2) }
-    // 			];
-    // 		}
-    // 	}
-    // 	for (var i = 0, len = nextSquare.length; i < len; i++) {
-    // 		dataValue = (nextSquare[i].y + '-' + nextSquare[i].x);
-    // 		domNextSquare = app.board.querySelectorAll('[data-position="' + dataValue + '"]')[0] || false;
-    // 		if (domNextSquare) {
-    // 			domNextPiece = domNextSquare.getElementsByClassName('board__piece')[0] || false;
-    // 		}
-    // 		dataValue = (futureSquare[i].y + '-' + futureSquare[i].x);
-    // 		domFutureSquare = app.board.querySelectorAll('[data-position="' + dataValue + '"]')[0] || false;
-    // 		if (domFutureSquare) {
-    // 			domFuturePiece = domFutureSquare.getElementsByClassName('board__piece')[0] || false;
-    // 		}
-    // 		if (domNextPiece) {
-    // 			isAdversary = ((app.isPlayerOne && app.getPieceType(domNextPiece) === 'player-two') || (!app.isPlayerOne && app.getPieceType(domNextPiece) === 'player-one')) ? true : false;
-    // 		}
-    // 		if (domNextPiece && !domFuturePiece && domFutureSquare && isAdversary) {
-    // 			break;
-    // 		}
-    // 		else {
-    // 			if (i === len - 1) {
-    // 				app.changePlayer();
-    // 			}
-    // 		}
-    // 	}
-    // };
     /**
 	 * Update the visual score.
 	 */
