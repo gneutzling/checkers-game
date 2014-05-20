@@ -2,7 +2,7 @@
 	"name": "checkers-game",
 	"version": "1.0.0",
 	"title": "Checkers Game",
-	"description": "",
+	"description": "A simple game built in pure Javascript.",
 	"author": {
 		"name": "Gabriel Neutzling",
 		"email": "gabrielneutzling@gmail.com",
