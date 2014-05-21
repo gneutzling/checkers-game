@@ -45,7 +45,7 @@
 		app.build();
 		app.attach();
 		// app.updatePlayer();
-		// app.updateScore();
+		app.updateScore();
 		app.bind();
 	};
 
@@ -437,8 +437,6 @@
 	 * Update the visual score.
 	 */
 	app.updateScore = function () {
-		return false;
-
 		if (app.isPlayerOne) {
 			app.player.one.score++;
 		}
@@ -446,8 +444,21 @@
 			app.player.two.score++;	
 		}
 
-		app.player.one.dom.score.innerHTML = app.player.one.score;
-		app.player.two.dom.score.innerHTML = app.player.two.score;
+		app.checkWinner();
+
+		// app.player.one.dom.score.innerHTML = app.player.one.score;
+		// app.player.two.dom.score.innerHTML = app.player.two.score;
+	};
+
+
+	app.checkWinner = function () {
+		if (app.player.one.score === 12) {
+			alert('PlayerOne Wins!');
+		}
+
+		if (app.player.two.score === 12) {
+			alert('PlayerTwo Wins!');
+		}
 	};
 
 
@@ -467,3 +478,4 @@
 	app.init();
 
 })();
+
